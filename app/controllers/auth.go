@@ -3,7 +3,7 @@ package controllers
 import (
 	"strings"
 
-	"github.com/lujiacn/revauth"
+	revauth "github.com/lujiacn/revauth_v2"
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
 )
@@ -12,7 +12,7 @@ type Auth struct {
 	*revel.Controller
 }
 
-//Authenticate for ldap authenticate or JSON
+// Authenticate for ldap authenticate or JSON
 func (c *Auth) Authenticate() revel.Result {
 	// create AuthMessage
 	authMsg := revauth.AuthMessage{
@@ -70,7 +70,7 @@ func (c *Auth) Authenticate() revel.Result {
 	return c.Redirect(nextUrl)
 }
 
-//Logout
+// Logout
 func (c *Auth) Logout() revel.Result {
 	//delete cache which is logged in user info
 	cache.Delete(c.Session.ID())
