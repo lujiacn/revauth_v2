@@ -21,7 +21,7 @@ func (c *Auth) Authenticate() revel.Result {
 		AppName:  c.Params.Get("AppName"),
 		AuthName: c.Params.Get("AuthName"),
 		Password: c.Params.Get("Password"),
-		IP:       c.ClientIP,
+		IP:       c.Request.RemoteAddr + "|" + c.Request.Header.Get("X-Forwarded-For"),
 	}
 
 	timeZone := c.Params.Get("TimeZone")
