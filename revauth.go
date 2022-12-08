@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/andybalholm/brotli"
 	"github.com/revel/revel"
 )
 
@@ -39,7 +40,7 @@ type ReplyAuthMessage struct {
 	//User    *models.User
 }
 
-//Init reading configuration, only json auth from acc
+// Init reading configuration, only json auth from acc
 func Init() {
 	AuthConn, _ = revel.Config.String("auth.connect")
 	if AuthConn == "" {
@@ -47,7 +48,7 @@ func Init() {
 	}
 }
 
-//Authenticate do auth and return Auth object including user information and lognin success or not
+// Authenticate do auth and return Auth object including user information and lognin success or not
 func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 
 	//AuthConn, _ := revel.Config.String("auth.connect")
@@ -78,25 +79,45 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
 	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		//body, _ := ioutil.ReadAll(resp.Body)
 		return nil, errors.New(resp.Status)
 	}
 
 	//read response body
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, errors.New(resp.Status)
+	// bodyBytes, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return nil, errors.New(resp.Status)
+	// }
+
+	// check encoding type, deflat, gzip, br
+	encoding := resp.Header.Get("Content-Encoding")
+	flatBytes := []byte{}
+
+	switch encoding {
+	case "br":
+		flatBytes, err = ioutil.ReadAll(brotli.NewReader(resp.Body))
+		if err != nil {
+			return nil, err
+		}
+	default:
+		flatBytes, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+
 	}
 
 	reply := ReplyAuthMessage{}
-	err = json.Unmarshal(bodyBytes, &reply)
+	err = json.Unmarshal(flatBytes, &reply)
 	if err != nil {
 		return nil, err
 	}
@@ -106,5 +127,4 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	}
 
 	return &reply, nil
-
 }

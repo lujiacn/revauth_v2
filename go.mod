@@ -1,10 +1,11 @@
 module github.com/lujiacn/revauth_v2
 
-go 1.17
+go 1.18
 
-//replace gopkg.in/stretchr/testify.v1 => github.com/stretchr/testify v1.6.1
-
-require github.com/revel/revel v1.0.0
+require (
+	github.com/andybalholm/brotli v1.0.4
+	github.com/revel/revel v1.0.0
+)
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect

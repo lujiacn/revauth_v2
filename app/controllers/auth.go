@@ -21,7 +21,7 @@ func (c *Auth) Authenticate() revel.Result {
 		AppName:  c.Params.Get("AppName"),
 		AuthName: c.Params.Get("AuthName"),
 		Password: c.Params.Get("Password"),
-		IP:       c.Request.RemoteAddr,
+		IP:       c.ClientIP,
 	}
 
 	timeZone := c.Params.Get("TimeZone")
@@ -38,6 +38,7 @@ func (c *Auth) Authenticate() revel.Result {
 		c.Flash.Error(c.Message("Please fill in account, password"))
 		return c.Redirect(c.Request.Referer())
 	}
+
 	reply, err := revauth.Authenticate(&authMsg)
 	if err != nil {
 		c.Flash.Error("Authenticate error: %v", err)
