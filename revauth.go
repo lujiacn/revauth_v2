@@ -1,15 +1,11 @@
 package revauth
 
 import (
-	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"net/http"
 
-	"github.com/andybalholm/brotli"
 	"github.com/revel/revel"
+	"github.com/valyala/fasthttp"
 )
 
 var (
@@ -57,67 +53,37 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	//}
 
 	// post to json
-	jsonByte, err := json.Marshal(msg)
+	jsonBytes, err := json.Marshal(msg)
 	if err != nil {
 		return nil, err
 	}
 
-	// PostJsonData without proxy
-	req, err := http.NewRequest("POST", AuthConn, bytes.NewBuffer(jsonByte))
-	if err != nil {
-		return nil, err
-	}
+	// fasthttp request
 
-	// prepare client read url content
-	var client *http.Client
-	var tr *http.Transport
+	req := fasthttp.AcquireRequest()
+	resp := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseRequest(req)   // <- do not forget to release
+	defer fasthttp.ReleaseResponse(resp) // <- do not forget to release
 
-	tr = &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
-
-	client = &http.Client{
-		Transport: tr,
-	}
-
+	req.SetRequestURI(AuthConn)
+	req.Header.SetMethod("POST")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
-	resp, err := client.Do(req)
+	req.SetBody(jsonBytes)
+
+	err = fasthttp.Do(req, resp)
 	if err != nil {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		//body, _ := ioutil.ReadAll(resp.Body)
-		return nil, errors.New(resp.Status)
+	if resp.StatusCode() != 200 {
+		return nil, errors.New(string(resp.Header.StatusMessage()))
 	}
 
-	//read response body
-	// bodyBytes, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return nil, errors.New(resp.Status)
-	// }
-
-	// check encoding type, deflat, gzip, br
-	encoding := resp.Header.Get("Content-Encoding")
-	flatBytes := []byte{}
-
-	switch encoding {
-	case "br":
-		flatBytes, err = ioutil.ReadAll(brotli.NewReader(resp.Body))
-		if err != nil {
-			return nil, err
-		}
-	default:
-		flatBytes, err = ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return nil, err
-		}
-
-	}
+	bodyBytes := resp.Body()
 
 	reply := ReplyAuthMessage{}
-	err = json.Unmarshal(flatBytes, &reply)
+
+	err = json.Unmarshal(bodyBytes, &reply)
 	if err != nil {
 		return nil, err
 	}
