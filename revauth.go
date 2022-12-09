@@ -1,6 +1,7 @@
 package revauth
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 
@@ -70,7 +71,12 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBody(jsonBytes)
 
-	err = fasthttp.Do(req, resp)
+	client := &fasthttp.Client{
+		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	err = client.Do(req, resp)
+
 	if err != nil {
 		return nil, err
 	}
