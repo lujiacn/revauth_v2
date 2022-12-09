@@ -3,12 +3,13 @@ module github.com/lujiacn/revauth_v2
 go 1.18
 
 require (
-	github.com/andybalholm/brotli v1.0.4
 	github.com/revel/revel v1.0.0
+	github.com/valyala/fasthttp v1.43.0
 )
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
@@ -26,7 +27,6 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.43.0 // indirect
 	github.com/xeonx/timeago v1.0.0-rc4 // indirect
 	golang.org/x/net v0.0.0-20220906165146-f3363e06e74c // indirect
 	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
