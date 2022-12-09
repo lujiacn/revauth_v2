@@ -16,7 +16,7 @@ require (
 	github.com/gomodule/redigo v1.8.8 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/inconshreveable/log15 v3.0.0-testing.5+incompatible // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.15.12 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
