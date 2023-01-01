@@ -85,7 +85,11 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 		return nil, errors.New(string(resp.Header.StatusMessage()))
 	}
 
-	bodyBytes := resp.Body()
+	bodyBytes, err := resp.BodyUncompressed()
+
+	if err != nil {
+		return nil, err
+	}
 
 	reply := ReplyAuthMessage{}
 
