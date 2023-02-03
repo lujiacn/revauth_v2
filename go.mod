@@ -1,6 +1,6 @@
 module github.com/lujiacn/revauth_v2
 
-go 1.19
+go 1.17
 
 require (
 	github.com/revel/revel v1.1.0
