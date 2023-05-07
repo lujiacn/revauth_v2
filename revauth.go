@@ -76,7 +76,7 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	// for dev model
 	// #nosec G402
 	if revel.DevMode {
-		revel.AppLog.Debug("InsecureSkipVerify in devmode", revel.DevMode)
+		revel.AppLog.Debugf("InsecureSkipVerify in devmode %v", revel.DevMode)
 		tlsConfig.InsecureSkipVerify = true
 	}
 
