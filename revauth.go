@@ -71,10 +71,16 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBody(jsonBytes)
 
+	var tlsConfig = tls.Config{MinVersion: tls.VersionTLS12}
+
+	// for dev model
 	// #nosec G402
-	client := &fasthttp.Client{
-		TLSConfig: &tls.Config{InsecureSkipVerify: true},
+	if revel.DevMode {
+		revel.AppLog.Debug("InsecureSkipVerify in devmode", revel.DevMode)
+		tlsConfig.InsecureSkipVerify = true
 	}
+
+	client := &fasthttp.Client{TLSConfig: &tlsConfig}
 
 	err = client.Do(req, resp)
 
