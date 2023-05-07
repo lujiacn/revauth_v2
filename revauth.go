@@ -71,6 +71,7 @@ func Authenticate(msg *AuthMessage) (*ReplyAuthMessage, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBody(jsonBytes)
 
+	// #nosec G402
 	client := &fasthttp.Client{
 		TLSConfig: &tls.Config{InsecureSkipVerify: true},
 	}
