@@ -45,18 +45,6 @@ func (c *Auth) Authenticate() revel.Result {
 		return c.Redirect(c.Request.Referer())
 	}
 
-	// set session
-	c.Session["UserID"] = reply.UserID
-	if reply.Account == "" {
-		c.Session["Identity"] = reply.Email
-	} else {
-		c.Session["Identity"] = reply.Account
-	}
-	c.Session["UserName"] = reply.Name
-	c.Session["IsAdmin"] = reply.IsAdmin
-	c.Session["Role"] = reply.Role
-	c.Session["AuthToken"] = reply.AuthToken
-	c.Session["Email"] = reply.Email
 	c.Session["TimeZone"] = timeZone
 	if locale != "" {
 		c.Session["Loc"] = locale
@@ -65,6 +53,21 @@ func (c *Auth) Authenticate() revel.Result {
 	if timeZone != "" {
 		c.Session["TimeZone"] = locale
 	}
+
+	// set session, only set AuthToken
+	c.Session["AuthToken"] = reply.AuthToken
+
+	// c.Session["UserID"] = reply.UserID
+	// if reply.Account == "" {
+	// 	c.Session["Identity"] = reply.Email
+	// } else {
+	// 	c.Session["Identity"] = reply.Account
+	// }
+	// c.Session["UserName"] = reply.Name
+	// c.Session["IsAdmin"] = reply.IsAdmin
+	// c.Session["Role"] = reply.Role
+	// c.Session["AuthToken"] = reply.AuthToken
+	// c.Session["Email"] = reply.Email
 
 	c.Flash.Success("Welcome, %v", reply.Name)
 
