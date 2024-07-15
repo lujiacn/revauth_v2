@@ -1,6 +1,6 @@
 module github.com/lujiacn/revauth_v2
 
-go 1.17
+go 1.21
 
 require (
 	github.com/revel/revel v1.1.0
@@ -25,8 +25,8 @@ require (
 	github.com/revel/pathtree v0.0.0-20140121041023-41257a1839e9 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/xeonx/timeago v1.0.0-rc5 // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/net v0.27.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/stack.v0 v0.0.0-20141108040640-9b43fcefddd0 // indirect
 )
